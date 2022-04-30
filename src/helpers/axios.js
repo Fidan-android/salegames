@@ -1,12 +1,16 @@
 import axios from "axios";
 
+// путь до нашего бэкенда
 const path = "http://127.0.0.1:5000/";
+
+// конфигурация заголовков для запроса, в которую добавляется наш токен
 const config = {
     headers : {
         Authorization : `Bearer ${localStorage.getItem('access_token')}`,
     }
 }
 
+// все функции для запросов к серверу
 export async function main() {    
       var res = await axios.get(path);
       return res;

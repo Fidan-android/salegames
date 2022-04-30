@@ -3,8 +3,11 @@ import VueRouter from 'vue-router'
 import { profile } from '../helpers/axios.js'
 import { authorization } from "@/helpers/help.js";
 
+// использовать в нашем приложении роутинга
 Vue.use(VueRouter)
 
+// все юрлы для роутера, которые содержат путь, имя и 
+// компонент, который надо открывать
 const routes = [
   {
     path: '/',
@@ -13,6 +16,8 @@ const routes = [
   },
   {
     path: '/profile',
+    // перед открытием проверка авторизации и если 
+    // ее нет, то уходим и открываем главную
     beforeEnter: ((to, from, next) => {
       if (authorization()) {
         next();
@@ -95,23 +100,29 @@ const routes = [
       return import('../views/404.vue')
     }
   },
+  // при других случая пути, переадресовываем на 404
   {
     path: '*',
     redirect: '/404'
   }
 ]
 
+// создаем роутер, с модом истории, чтобы при переходе на другие страицы
+// у нас не было перезагрузки, а сразу переходило
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
 
+// до открытия страницы берется ее имя и ставится в титл сайта
 router.beforeEach((to, from, next) => {
   document.title = to.name;
   next();
 });
 
+// функция вызывается после авторизации, если мы админ то откроется админ панель
+// иначе обычный сайт
 async function lazyLoadView(token) {
   if (token == undefined) {
     return import('../views/Home.vue');
@@ -127,4 +138,5 @@ async function lazyLoadView(token) {
   }
 }
 
+// экспортируем в приложении наш роутер
 export default router
