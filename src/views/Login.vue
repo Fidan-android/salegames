@@ -20,55 +20,30 @@
 
 
 <script>
+import { login } from "@/helpers/axios.js";
 export default {
     name: 'Login',
     methods: {
         onLogin(e) {
             e.preventDefault();
-            // login(e.target).then(data => {
-            //     console.log(data);
-            //     switch(data['code']) {
-            //         case "200": {
-            //             localStorage.setItem("token", data['token']);
-            //             this.$router.push("/").catch(() => {}); 
-            //             break;
-            //         }
-            //         case "67": {
-            //             var message = document.getElementById("message");
-            //             message.style.color = "red";
-            //             message.style.display = "block";
-            //             message.innerHTML = data['message'];
-            //             setTimeout(() => {
-            //                 message.style.display = "none";
-            //             }, 3000);
-            //             break;
-            //         }
-            //         case "401": {
-            //             var message = document.getElementById("message");
-            //             message.style.color = "red";
-            //             message.style.display = "block";
-            //             message.innerHTML = data['message'];
-            //             setTimeout(() => {
-            //                 message.style.display = "none";
-            //             }, 3000);
-            //             break;
-            //         }
-            //         case "89": {
-            //             var message = document.getElementById("message");
-            //             message.style.color = "red";
-            //             message.style.display = "block";
-            //             message.innerHTML = data['message'];
-            //             setTimeout(() => {
-            //                 message.style.display = "none";
-            //             }, 3000);
-            //             break;
-            //         }
-            //         default: {
-            //             console.log(data['message']);
-            //             break;
-            //         }
-            //     }
-            // });
+            login(e.target)
+                .then(res => res.data)
+                .then(data => {
+                    var message = document.getElementById("message");
+                    if (data['code'] == 401) {
+                        message.style.color = "red";
+                        message.style.display = "block";
+                        message.innerHTML = "Вы ввели неверный логин или пароль";
+                        setTimeout(() => {
+                            message.style.display = "none";
+                        }, 3000);
+                        return;
+                    }
+                    
+                    localStorage.setItem("access_token", data['token']);
+                    // this.$router.push("/").catch(() => {});
+                    this.$router.go("/");
+                });
         }
     }
 }

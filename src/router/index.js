@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { checkPermission } from '../helpers/axios.js'
+import { profile } from '../helpers/axios.js'
 import { authorization } from "@/helpers/help.js";
 
 Vue.use(VueRouter)
@@ -9,7 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'Настольные игры',
-    component: () => lazyLoadView(localStorage.getItem("token"))
+    component: () => lazyLoadView(localStorage.getItem("access_token"))
   },
   {
     path: '/profile',
@@ -75,6 +75,20 @@ const routes = [
     }
   },
   {
+    path: '/orders',
+    name: 'Управление заказами',
+    component: function() {
+      return import('../views/EditOrders.vue')
+    }
+  },
+  {
+    path: '/products',
+    name: 'Управление продуктами',
+    component: function() {
+      return import('../views/EditProducts.vue')
+    }
+  },
+  {
     path: '/404',
     name: 'Not Found',
     component: function () {
@@ -99,12 +113,17 @@ router.beforeEach((to, from, next) => {
 });
 
 async function lazyLoadView(token) {
-  var permission = false;//(await checkPermission(token))['admin'];
-  //проверяю доступность и показываю определенные панельки
-  if (!permission) {
+  if (token == undefined) {
     return import('../views/Home.vue');
   } else {
-    return import('../views/Admin.vue')
+    var permission = (await profile())['data']['profile']['admin'];
+    console.log(permission)
+    //проверяю доступность и показываю определенные панельки
+    if (!permission) {
+      return import('../views/Home.vue');
+    } else {
+      return import('../views/Admin.vue')
+    }
   }
 }
 

@@ -1,3 +1,3 @@
 export function authorization() {
-    return !localStorage.getItem("token");
+    return localStorage.getItem("access_token") != undefined;
 }

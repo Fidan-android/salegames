@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    
+    Панель администратора
   </div>
 </template>
 
